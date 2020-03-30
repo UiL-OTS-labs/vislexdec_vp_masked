@@ -1,0 +1,25 @@
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+
+# OS generated junk #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# DB
+db/
+
+#swap & bak & misc
+*.swp
+*.bak
+*.ico
+
