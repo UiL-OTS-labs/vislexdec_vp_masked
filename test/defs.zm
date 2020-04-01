@@ -30,7 +30,7 @@ const dur       PRE_PRIME_MASK_DURATION         = 0ms;
 const dur       POST_PRIME_MASK_DURATION        = 0ms;
 
 // Default string to repeat for masking (prime) text, like so: '####'
-const string    MASK_CHARACTER_DEFAULT          = '#';
+const string    MASK_CHARACTER_DEFAULT          = "#";
 
 // Duration of the target stimulus presentation.
 const dur       STIMULUS_DURATION               = 1000ms;
@@ -38,7 +38,7 @@ const dur       STIMULUS_DURATION               = 1000ms;
 // Duration of the interval between prime and target.
 //const dur       PRIME2TARGET_INTERVAL           = 300ms;
 // Removing interval definition here, and defining a prime duration.
-const dur       PRIME_DURATION                  = 300ms;
+const dur       PRIME2TARGET_INTERVAL           = 300ms;
 
 // Duration of the feedback presentation.
 const dur       FEEDBACK_DURATION               = 1000ms;
