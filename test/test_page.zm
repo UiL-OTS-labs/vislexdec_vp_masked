@@ -26,7 +26,8 @@ enum TestEvent {
 Page test_page
 {
     TestItem    item;           // trial control parameters
-
+    //string      mask_text;      // new, it needs to be created
+    //int         primelength;   // length
 
     init()
     {
@@ -71,6 +72,17 @@ Page test_page
                 }
             }
 
+            TextShape pre_prime_mask
+            {
+                init()
+                {
+                    font_family = TEST_PAGE_STIMULUS_FONT_FAMILY;
+                    font_size = TEST_PAGE_STIMULUS_FONT_SIZE;
+                    line_pattern_color = TEST_PAGE_STIMULUS_TEXT_COLOR;
+                    hor_alignment = ALIGN_CENTER;
+                    ver_alignment = ALIGN_CENTER;
+                }
+            }
 
             TextShape prime
             {
@@ -84,6 +96,17 @@ Page test_page
                 }
             }
 
+            TextShape post_prime_mask
+            {
+                init()
+                {
+                    font_family = TEST_PAGE_STIMULUS_FONT_FAMILY;
+                    font_size = TEST_PAGE_STIMULUS_FONT_SIZE;
+                    line_pattern_color = TEST_PAGE_STIMULUS_TEXT_COLOR;
+                    hor_alignment = ALIGN_CENTER;
+                    ver_alignment = ALIGN_CENTER;
+                }
+            }
 
             TextShape stimulus
             {
@@ -97,6 +120,7 @@ Page test_page
                 }
             }
         }
+
 
 
         HorizontalLayout buttons
@@ -148,39 +172,64 @@ Page test_page
             }
         }
 
-
+        
         time start_stimulus(time t)
         {
-            // Prepare prime and target stimulus presentation objects.
-            canvas.prime.text = item.prime;
+
             canvas.stimulus.text = item.word;
-
-            // Start fixation cross.
-            canvas.fixation.start(t, FIXATION_DURATION);
-            time fixoffset = canvas.fixation.expected_finish_time;
-
-            // Start prime at fixation offset.
-            canvas.prime.start(fixoffset, PRIME_DURATION);
-            time primeoffset = canvas.prime.expected_finish_time;
-
             // Start target stimulus at prime offset + prime-target ISI.
             // Note, the actual interval between prime offset and target
             // onset will be a multiple of the actual screen refresh interval.
-            canvas.stimulus.start(primeoffset + PRIME2TARGET_INTERVAL,
-                STIMULUS_DURATION);
-
+            canvas.stimulus.start(t + PRIME2TARGET_INTERVAL, STIMULUS_DURATION);
             // Return target stimulus onset time.
             return canvas.stimulus.expected_start_time;
         }
 
+        time present_pre_prime_mask(time t, duration dur, string pre_pm)
+        {
+            canvas.pre_prime_mask.text = pre_pm;
+            //place it
+            canvas.pre_prime_mask.start(t, dur);
+            return pre_prime_mask.expected_finish_time;
+        }
 
+        time present_fixcross(time t, duration dur)
+        {
+            canvas.fixation.start(t, dur)
+            return canvas.fixation.expected_finish_time;
+        }
+
+        time present_post_prime_mask(time t,
+                                     duration dur,
+                                     string post_pm)
+        {
+            canvas.post_prime_mask.text = post_ppm;
+            //place it
+            canvas.post_prime_mask.start(t, dur);
+            return post_prime_mask.expected_finish_time;
+
+        }
+
+        time present_prime(time t)
+        {
+            canvas.prime.text = item.prime;
+            canvas.prime.start(t, PRIME_DURATION)
+            return canvas.prime.expected_finish_time;
+        }
+            
         void reset()
         {
             full_abort();
 
             canvas.stimulus.is_visible = false;
+            canvas.fixation.is_visible = false;
+            canvas.pre_prime_mask.is_visible = false;
+            canvas.pre_prime_mask.is_visible = false;
+            canvas.prime.is_visible = false;
+            canvas.post_prime_mask.is_visible = false;
         }
     }
+
 
 
     Response response
@@ -250,8 +299,7 @@ Page test_page
         layout.reset();
 
         signal_target(msgid);   // tell caller we're done
-        target = null;
-
+        target = null;        
         control.clear_status();
     }
 
@@ -302,6 +350,7 @@ Page test_page
     {
         // Save the passed trial control parameters.
         item = it;
+        //mask = test_page.make_mask();
 
 
         // Show this page (if not yet done) and make tref the trial start time.
@@ -312,8 +361,20 @@ Page test_page
         response.clear();
 
 
-        // Start fixation symbol, prime stimulus and target stimulus.
-        time stimonset = layout.start_stimulus(tref);
+        // Start fixation symbol...
+        time fix_offset = layout.present_fixcross(tref);
+        // ... pre prime mask...
+        time pre_offset = layout.present_pre_prime_mask(fix_offset, 
+                                    PRE_PRIME_MASK_DURATION,
+                                    PRE_PRIME_MASK_TEXT);
+        //... prime...
+        time prime_offset = layout.present_prime(pre_offset);
+        //...post...
+        time post_offset = layout.present_post_prime_mask(prime_offset,
+                                    POST_PRIME_MASK_DURATION,
+                                    POST_PRIME_MASK_TEXT);
+        // ... stimulus...
+        time stimonset = layout.start_stimulus(post_offset);
 
 
         // Response interval starts at stimulus onset. Timeout after
@@ -330,7 +391,8 @@ Page test_page
             string(item.id) + "  " +
             string(item.type) + "  " +
             string(item.prime) + "  " +
-            string(item.word));
+            string(item.word)
+            );
 
 
         // Remember who to signal when the trial is over.

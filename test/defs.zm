@@ -20,25 +20,31 @@ const dur       INTERTRIAL_INTERVAL             = 1000ms;
 // Duration of the fixation symbol presentation.
 const dur       FIXATION_DURATION               = 1000ms;
 
+//first harcoding the pre and post mask strings
+const string    PRE_PRIME_MASK_TEXT             = "##########";
+const string    POST_PRIME_MASK_TEXT            = "((((((((((";
+
+//for later implementation
+// Default string to repeat for masking (prime) text, like so: '####'
+const string    PRE_MASK_CHARACTER_DEFAULT      = "#";
+
+// Duration of the pre prime mask, defaults to zero (no pre mask)
+const dur       PRE_PRIME_MASK_DURATION         = 200ms;
+
 // Duration of the prime stimulus presentation.
 const dur       PRIME_DURATION                  = 500ms;
 
-// Duration of the pre prime mask, defaults to zero (no pre mask)
-const dur       PRE_PRIME_MASK_DURATION         = 0ms;
-
 // Duration of the post prime mask, defaults to zero (no post mask)
-const dur       POST_PRIME_MASK_DURATION        = 0ms;
-
-// Default string to repeat for masking (prime) text, like so: '####'
-const string    MASK_CHARACTER_DEFAULT          = "#";
+const dur       POST_PRIME_MASK_DURATION        = 200ms;
 
 // Duration of the target stimulus presentation.
 const dur       STIMULUS_DURATION               = 1000ms;
 
 // Duration of the interval between prime and target.
 //const dur       PRIME2TARGET_INTERVAL           = 300ms;
-// Removing interval definition here, and defining a prime duration.
-const dur       PRIME2TARGET_INTERVAL           = 300ms;
+
+// This will need a better name at some point, because of masks having durations
+const dur       PRIME2TARGET_INTERVAL          = 300ms;
 
 // Duration of the feedback presentation.
 const dur       FEEDBACK_DURATION               = 1000ms;
