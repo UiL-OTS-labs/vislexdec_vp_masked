@@ -173,6 +173,37 @@ Page test_page
         }
 
         
+
+
+        time present_pre_prime_mask(time t)
+        {
+            canvas.pre_prime_mask.text = PRE_PRIME_MASK_TEXT;
+            //place it
+            canvas.pre_prime_mask.start(t, PRE_PRIME_MASK_DURATION);
+            return canvas.pre_prime_mask.expected_finish_time;
+        }
+
+        time present_fixcross(time t)
+        {
+            canvas.fixation.start(t, FIXATION_DURATION);
+            return canvas.fixation.expected_finish_time;
+        }
+
+        time present_post_prime_mask(time t)
+        {
+            canvas.post_prime_mask.text = POST_PRIME_MASK_TEXT;
+            //place it
+            canvas.post_prime_mask.start(t, POST_PRIME_MASK_DURATION);
+            return canvas.post_prime_mask.expected_finish_time;
+        }
+
+        time present_prime(time t)
+        {
+            canvas.prime.text = item.prime;
+            canvas.prime.start(t, PRIME_DURATION);
+            return canvas.prime.expected_finish_time;
+        }
+
         time start_stimulus(time t)
         {
 
@@ -183,38 +214,6 @@ Page test_page
             canvas.stimulus.start(t + PRIME2TARGET_INTERVAL, STIMULUS_DURATION);
             // Return target stimulus onset time.
             return canvas.stimulus.expected_start_time;
-        }
-
-        time present_pre_prime_mask(time t, duration dur, string pre_pm)
-        {
-            canvas.pre_prime_mask.text = pre_pm;
-            //place it
-            canvas.pre_prime_mask.start(t, dur);
-            return pre_prime_mask.expected_finish_time;
-        }
-
-        time present_fixcross(time t, duration dur)
-        {
-            canvas.fixation.start(t, dur)
-            return canvas.fixation.expected_finish_time;
-        }
-
-        time present_post_prime_mask(time t,
-                                     duration dur,
-                                     string post_pm)
-        {
-            canvas.post_prime_mask.text = post_ppm;
-            //place it
-            canvas.post_prime_mask.start(t, dur);
-            return post_prime_mask.expected_finish_time;
-
-        }
-
-        time present_prime(time t)
-        {
-            canvas.prime.text = item.prime;
-            canvas.prime.start(t, PRIME_DURATION)
-            return canvas.prime.expected_finish_time;
         }
             
         void reset()
@@ -364,16 +363,15 @@ Page test_page
         // Start fixation symbol...
         time fix_offset = layout.present_fixcross(tref);
         // ... pre prime mask...
-        time pre_offset = layout.present_pre_prime_mask(fix_offset, 
-                                    PRE_PRIME_MASK_DURATION,
-                                    PRE_PRIME_MASK_TEXT);
+        time pre_offset = layout.present_pre_prime_mask(fix_offset);
         //... prime...
         time prime_offset = layout.present_prime(pre_offset);
         //...post...
-        time post_offset = layout.present_post_prime_mask(prime_offset,
-                                    POST_PRIME_MASK_DURATION,
-                                    POST_PRIME_MASK_TEXT);
-        // ... stimulus...
+        time post_offset = layout.present_post_prime_mask(prime_offset);
+        // ,
+        //                             POST_PRIME_MASK_DURATION,
+        //                             POST_PRIME_MASK_TEXT);
+        // // ... stimulus...
         time stimonset = layout.start_stimulus(post_offset);
 
 
